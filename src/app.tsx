@@ -1,5 +1,5 @@
-import { Header } from "./components/header";
-import { AttendeeList } from "./components/attendee-list";
+import { Header } from './components/header'
+import { AttendeeList } from './components/attendee-list'
 
 export function App() {
   return (
@@ -9,5 +9,3 @@ export function App() {
     </div>
   )
 }
-
-
