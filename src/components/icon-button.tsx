@@ -2,10 +2,10 @@ import { ComponentProps } from 'react'
 import { VariantProps, tv } from 'tailwind-variants'
 
 const button = tv({
-  base: 'border border-white/10 rounded-md p-1.5',
+  base: 'border border-white/10 rounded-md p-1.5 disabled:opacity-40 disabled:cursor-not-allowed',
   variants: {
     variant: {
-      primary: 'bg-white/10 ',
+      primary: 'bg-white/10',
       outline: 'bg-black/20',
     },
   },
