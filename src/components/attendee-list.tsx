@@ -1,83 +1,121 @@
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, MoreHorizontal, Search } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  MoreHorizontal,
+  Search,
+} from 'lucide-react'
+
+import { attendees } from '../data/attendees'
+
+import { dateFormatter } from '../utils/functions'
+
+import { usePagination } from '../hooks/usePagination'
+
+import { Table } from './table/table'
+import { IconButton } from './icon-button'
+import { TableRow } from './table/table-row'
+import { TableCell } from './table/table-cell'
+import { TableHeader } from './table/table-header'
 
 export function AttendeeList() {
+  const totalPages = Math.ceil(attendees.length / 10)
+
+  const { goToFirstPage, goToLastPage, goToNextPage, goToPreviousPage, page } =
+    usePagination(totalPages)
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex gap-3 items-center">
         <h1 className="text-2xl font-bold">Participantes</h1>
 
         <div className="border border-white/10 rounded-lg py-1.5 px-3  w-72 flex items-center gap-3">
-          <Search className="size-4 text-emerald-300"/>
-          <input type="text" placeholder="Buscar participante..." className="bg-transparent flex-1 outline-none p-0 text-sm ring-0 border-none" />
+          <Search className="size-4 text-emerald-300" />
+          <input
+            type="text"
+            placeholder="Buscar participante..."
+            className="bg-transparent flex-1 outline-none p-0 text-sm ring-0 border-none"
+          />
         </div>
       </div>
 
-      <div className="border border-white/10 rounded-lg">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-white/10">
-              <th style={{ width: 48 }} className="py-3 px-4 text-sm font-semibold text-left">
+      <Table>
+        <thead>
+          <TableRow>
+            <TableHeader style={{ width: 48 }}>
+              <input type="checkbox" className="bg-black/20 rounded size-4" />
+            </TableHeader>
+            <TableHeader>Código</TableHeader>
+            <TableHeader>Participante</TableHeader>
+            <TableHeader>Data da inscrição</TableHeader>
+            <TableHeader>Data da check-in</TableHeader>
+            <TableHeader style={{ width: 68 }}></TableHeader>
+          </TableRow>
+        </thead>
+
+        <tbody>
+          {attendees.slice((page - 1) * 10, page * 10).map((attendee) => (
+            <TableRow key={attendee.id}>
+              <TableCell>
                 <input type="checkbox" className="bg-black/20 rounded size-4" />
-              </th>
-              <th className="py-3 px-4 text-sm font-semibold text-left">Código</th>
-              <th className="py-3 px-4 text-sm font-semibold text-left">Participante</th>
-              <th className="py-3 px-4 text-sm font-semibold text-left">Data da inscrição</th>
-              <th className="py-3 px-4 text-sm font-semibold text-left">Data da check-in</th>
-              <th style={{ width: 68 }} className="py-3 px-4 text-sm font-semibold text-left"></th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {Array.from({ length: 10 }).map((_, index) => (
-              <tr key={index} className="border-b border-white/10">
-                <td className="py-3 px-4 text-sm text-zinc-300">
-                  <input type="checkbox" className="bg-black/20 rounded size-4" />
-                </td>
-                <td className="py-3 px-4 text-sm text-zinc-300">123456</td>
-                <td className="py-3 px-4 text-sm text-zinc-300">
-                  <div className="flex flex-col gap-1">
-                    <span className="font-semibold text-white">Daniel Guimaraes Vieira</span>
-                    <span>danGuimaraes@gmail.com</span>
-                  </div>
-                </td>
-                <td className="py-3 px-4 text-sm text-zinc-300">7 dias atrás</td>
-                <td className="py-3 px-4 text-sm text-zinc-300">7 dias atrás</td>
-                <td className="py-3 px-4 text-sm text-zinc-300">
-                  <button className="bg-black/20 border border-white/10 rounded-md p-1.5">
-                    <MoreHorizontal className="size-4"/>
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-
-          <tfoot>
-            <tr>
-              <td colSpan={3} className="py-3 px-4 text-sm text-zinc-300">Mostrando 10 de 228 itens</td>
-              <td colSpan={3} className="py-3 px-4 text-sm text-zinc-300 text-right">
-                <div className="inline-flex items-center gap-8">
-                  <span>Página 1 de 11</span>
-                  
-                  <div className="flex items-center gap-1.5">
-                    <button className="bg-black/20 border border-white/10 rounded-md p-1.5">
-                      <ChevronsLeft  className="size-4"/>
-                    </button>
-                    <button className="bg-black/20 border border-white/10 rounded-md p-1.5">
-                      <ChevronLeft className="size-4"/>
-                    </button>
-                    <button className="bg-black/20 border border-white/10 rounded-md p-1.5">
-                      <ChevronRight  className="size-4"/>
-                    </button>
-                    <button className="bg-black/20 border border-white/10 rounded-md p-1.5">
-                      <ChevronsRight  className="size-4"/>
-                    </button>
-                  </div>
+              </TableCell>
+              <TableCell>{attendee.id}</TableCell>
+              <TableCell>
+                <div className="flex flex-col gap-1">
+                  <span className="font-semibold text-white">
+                    {attendee.name}
+                  </span>
+                  <span>{attendee.email}</span>
                 </div>
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+              </TableCell>
+              <TableCell>{dateFormatter(attendee.createdAt)}</TableCell>
+              <TableCell>{dateFormatter(attendee.checkInAt)}</TableCell>
+              <TableCell>
+                <IconButton variant="outline">
+                  <MoreHorizontal className="size-4" />
+                </IconButton>
+              </TableCell>
+            </TableRow>
+          ))}
+        </tbody>
+
+        <tfoot>
+          <TableRow>
+            <TableCell colSpan={3}>
+              Mostrando {page * 10} de {attendees.length} participantes
+            </TableCell>
+            <TableCell colSpan={3} className="text-right">
+              <div className="inline-flex items-center gap-8">
+                <span>
+                  Página {page} de {totalPages}
+                </span>
+
+                <div className="flex items-center gap-1.5">
+                  <IconButton disabled={page === 1} onClick={goToFirstPage}>
+                    <ChevronsLeft className="size-4" />
+                  </IconButton>
+                  <IconButton disabled={page === 1} onClick={goToPreviousPage}>
+                    <ChevronLeft className="size-4" />
+                  </IconButton>
+                  <IconButton
+                    disabled={page === totalPages}
+                    onClick={goToNextPage}
+                  >
+                    <ChevronRight className="size-4" />
+                  </IconButton>
+                  <IconButton
+                    disabled={page === totalPages}
+                    onClick={goToLastPage}
+                  >
+                    <ChevronsRight className="size-4" />
+                  </IconButton>
+                </div>
+              </div>
+            </TableCell>
+          </TableRow>
+        </tfoot>
+      </Table>
     </div>
   )
 }
